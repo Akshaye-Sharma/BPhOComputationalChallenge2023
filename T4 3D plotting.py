@@ -5,9 +5,6 @@ import math
 from numpy import *
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
-print(plt.style.available)
-print("____")
-print(matplotlib.get_configdir())
 plt.style.use('classic')
 
 # Data
@@ -57,21 +54,12 @@ for planet in range(len(planets)):
     ecc_temp = eccentricity_calc(planets[planet][1], planets[planet][2])
     eccentricity_of_ellipse.append(ecc_temp)
 
-#ax = plt.figure().add_subplot(projection='3d')
-
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-plt.plot(0, 0, 1, c='yellow', marker='o', markersize=10)
-"""  
-t = linspace(0, 360, 180) # Start point of revolution, End point, Num of points
-orbit_dot = array([planets[planet][1] * cos(radians(t)) + eccentricity_of_ellipse[planet]*cos(radians(planets[planet][3])),
-                    planets[planet][2] * sin(radians(t)),
-                    (planets[planet][1] * cos(radians(t)) + eccentricity_of_ellipse[planet]*cos(radians(planets[planet][3])))*sin(radians(planets[planet][3]))+1
-                    ])
+plt.plot(0, 0, 1, c='yellow', marker='o', markersize=15)
 
-"""
 
 dotting = []
 for planet in range(5, 9):
@@ -83,18 +71,9 @@ for planet in range(5, 9):
     dotting.append(orbit_dot)
     orbit_dot_plot, = ax.plot(*orbit_dot, label=planets[planet][0])
 
-    #ax.plot(x, y, z, label=planets[planet][0])
-
-#ax.set_facecolor('black')#ax.grid(False)
 ax.xaxis.pane.fill = False
 ax.yaxis.pane.fill = False
 ax.zaxis.pane.fill = False
-
-#ylimit = planet_ylimit()
-#xlimit = planet_xlimit()
-
-#ax.set_xlim(- (xlimit[0] - eccentricity_of_ellipse[xlimit[1]]), xlimit[0] + eccentricity_of_ellipse[xlimit[1]])
-#ax.set_ylim(-ylimit, ylimit)
 
 ax.set_xlim(-40, 50)
 ax.set_ylim(-40, 40)
@@ -112,31 +91,26 @@ ani_planet7, = plt.plot([], [], [], marker='o')
 ani_planet8, = plt.plot([], [], [], marker='o')
 ani_planet9, = plt.plot([], [], [], marker='o')
 orbits = [ani_planet1, ani_planet2, ani_planet3, ani_planet4, ani_planet5, ani_planet6, ani_planet7, ani_planet8, ani_planet9]
-"""
-def update(i, planet):
-    theta = deg2rad(i)
-    x = planets[planet][1] * cos(radians(theta)) + eccentricity_of_ellipse[planet]
-    y = planets[planet][2] * sin(radians(theta))
-    x = x*cos(radians(planets[planet][3]))
-    z = x*sin(radians(planets[planet][3]))+1
-    orbits[i].set_data(x, y)
-    orbits[i].set_3d_properties(z)
-#an1 = anim.FuncAnimation(ax, partial(update, planet=6), frames=1080, interval=1)
 
-"""
+t = linspace(0, 360, 1800)
+
 def update(frame):
     for planet in range(5, 9):
         orbitalperiods = planets[planet][4] / 365.2
-        x = planets[planet][1] * cos(radians(frame / orbitalperiods)) + eccentricity_of_ellipse[planet]*cos(radians(planets[planet][3]))
-        y = planets[planet][2] * sin(radians(frame / orbitalperiods))
-        z = x*sin(radians(planets[planet][3]))+1
-        orbits[planet].set_data(x, y)
-        orbits[planet].set_3d_properties(z)
+        theta = radians(frame / orbitalperiods)
 
-orbit_marker, = ax.plot([orbit_dot[0, 0]], [orbit_dot[1, 0]], [orbit_dot[2, 0]], marker='o')
-ani = FuncAnimation(fig, partial(update), frames=len(t), interval = 0)
-an1 = anim.FuncAnimation(fig, partial(update), frames=1080, interval = 0)
+        x = planets[planet][1] * cos(theta) + eccentricity_of_ellipse[planet] * cos(radians(planets[planet][3]))
+        y = planets[planet][2] * sin(theta)
+        z = x * sin(radians(planets[planet][3])) + 1
 
+        orbits[planet].set_data([x], [y])
+        orbits[planet].set_3d_properties([z])
+
+    return orbits
+
+ani = FuncAnimation(fig, update, frames=len(t), interval=50)
+
+# Plotting Info & Misc
 ax.set_xlabel("x/AU")
 ax.set_ylabel("y/AU")
 ax.set_zlabel("z/AU")

@@ -1,67 +1,34 @@
-import numpy
-from numpy import *
+import numpy as np
 import math
 from matplotlib import pyplot as plt
-P = 248.348    
-times = []
-times2 = []
 
-#plt.style.use('rose-pine')
-
-planets = [
-    # ['Planet', Semi-Major Axis, Semi-Minor Axis, Tilts, Orbital Frequencies]
-    ['Mercury', 0.387, 0.37870, 7.00, 6],
-    ['Venus', 0.723, 0.72298, 3.39, 3],
-    ['Earth', 1.00, 0.99986, 0.00, 2],
-    ['Mars', 1.523, 1.51740, 1.85, 1],
-    ['Jupiter', 5.20, 5.19820, 1.31, 0.9],
-    ['Saturn', 9.58, 9.56730, 2.49, 0.5],
-    ['Uranus', 19.29, 19.19770, 0.77, 0.3],
-    ['Neptune', 30.25, 30.10870, 1.77, 0.7],
-    ['Pluto', 39.51, 39.482, 17.5, 0.9]
-]
-
+P = 248.348  # Period
 
 def simpsonintegration(theta, ecc):
-    global times
     a = 0
-    n = 80
+    n = 81 
     h = (theta - a) / (n - 1)
-    x = linspace(a, theta, n)
-    f = (1-ecc*cos(x))**2
-    I_simp = (h/3) * (f[0] + 2*sum(f[:n-2:2]) \
-                + 4*sum(f[1:n-1:2]) + f[n-1])
+    x = np.linspace(a, theta, n)
+    f = 1 / (1 + ecc * np.cos(x))**2
+    I_simp = (h / 3) * (f[0] + 2 * np.sum(f[2:n-2:2]) \
+                        + 4 * np.sum(f[1:n-1:2]) + f[-1])
+    time = (P * (1 - ecc**2)**(3/2)) * I_simp * (1 / (2 * math.pi))
+    return time
 
-    time = (P*(1-ecc**2)**(3/2))*I_simp*(1/(2*pi))
-    if ecc == -0.25:
-        times.append(time)
-    elif ecc == 0:
-        times2.append(time)
+thetas = np.arange(0, 19, 0.1)
 
-thetas = []
-i=0
-while i <= 19:
-    thetas.append(i)
-    i+=0.1
+times0 = [simpsonintegration(theta, 0) for theta in thetas]
+times025 = [simpsonintegration(theta, 0.25) for theta in thetas]
 
-for j in range(len(thetas)):
-    simpsonintegration(thetas[j], 0)
+plt.plot(times0, thetas, label='Circular orbit (e=0)', color='blue')
+plt.plot(times025, thetas, label='Elliptical orbit (e=0.25)', color='green')
 
-plt.plot(times2, thetas, label = 'Circular e = 0', color="blue")
-
-thetas = []
-i=0
-while i <= 19:
-    thetas.append(i)
-    i+=0.1
-
-for i in range(len(thetas)):
-    simpsonintegration(thetas[i], -0.25) 
-
-plt.plot(times, thetas, label = 'e = 0.25', color="green")
-
+# Plotting Info & Misc
 plt.xlim(0, 800)
 plt.ylim(0, 20)
+plt.xlabel('Time')
+plt.ylabel('Theta (radians)')
 plt.legend()
-plt.grid()
+plt.grid(True)
+plt.title('Orbital Time vs Angle Using Simpson Integration')
 plt.show()

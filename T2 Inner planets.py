@@ -5,8 +5,6 @@ import math
 from numpy import *
 # Data
 
-#plt.style.use('rose-pine')
-
 planets = [
     # ['Planet', Semi-Major Axis, Semi-Minor Axis, Tilts, Orbital Frequencies]
     ['Mercury', 0.387, 0.37870, 7.00, 6],
@@ -53,7 +51,7 @@ fig, ax = plt.subplots()
 
 # Constant/Fixed Sun 
 Sun=[0]
-plt.plot(Sun, c= "Yellow", marker="o")
+plt.plot(Sun, c="orange", marker="o", markersize=10)  # Star marker
 
 # Ellipses of planets
 for planet in range(0, 4):
@@ -77,10 +75,7 @@ xlimit = planet_xlimit()
 plt.ylim(-ylimit, ylimit)
 plt.xlim(- (xlimit[0] - eccentricity_of_ellipse[xlimit[1]]), xlimit[0] + eccentricity_of_ellipse[xlimit[1]])
 
-#plt.ylim(-planets[3][2], planets[3][2])
-#plt.xlim(-2, 2)
 # Plotting Info & Misc
-
 plt.xlabel('x/AU')
 plt.ylabel('y/AU')
 plt.title('Solar System')

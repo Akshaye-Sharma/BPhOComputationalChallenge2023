@@ -62,7 +62,7 @@ fig, ax = plt.subplots()
 
 # Constant/Fixed Sun 
 Sun=[0]
-plt.plot(Sun, c= "Yellow", marker="o")
+plt.plot(Sun, c= "orange", marker="o", markersize=10)
 
 # Ellipses of First 5 Planets
 for planet in range(0, 4):
@@ -96,28 +96,24 @@ plt.grid()
 
 
 # Planet Artist
-ani_planets = []
-ani_planet1, = plt.plot([], [], marker='o')
-ani_planet2, = plt.plot([], [], marker='o')
-ani_planet3, = plt.plot([], [], marker='o')
-ani_planet4, = plt.plot([], [], marker='o')
-ani_planet5, = plt.plot([], [], marker='o')
-ani_planet6, = plt.plot([], [], marker='o')
-ani_planet7, = plt.plot([], [], marker='o')
-ani_planet8, = plt.plot([], [], marker='o')
-orbits = [ani_planet1, ani_planet2, ani_planet3, ani_planet4, ani_planet5]#, ani_planet6, ani_planet7, ani_planet8]
+orbits = []
+for _ in range(4):
+    planet_dot, = plt.plot([], [], marker='o')
+    orbits.append(planet_dot)
+
 # Animation Function
+def update(frame):
+    theta = deg2rad(frame)
+    for idx in range(4):  # Animate first 4 planets
+        x = planets[idx][1] * cos(theta / planets[idx][3]) + eccentricity_of_ellipse[idx]
+        y = planets[idx][2] * sin(theta / planets[idx][3])
+        orbits[idx].set_data([x], [y])
 
+    return orbits
 
-def update(i):
-    theta = deg2rad(i)
-    for i in range(4):
-        x = planets[i][1] * cos(theta/planets[i][3]) + eccentricity_of_ellipse[i]
-        y = planets[i][2] * sin(theta/planets[i][3])
-        orbits[i].set_data(x, y)
+# Animation
+an1 = anim.FuncAnimation(fig, update, frames=1080, interval=30, blit=True)
 
-an1 = anim.FuncAnimation(fig, update, frames=1080, interval = 0)
 
 # Displaying Graph
-
 plt.show()
