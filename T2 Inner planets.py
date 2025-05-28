@@ -1,10 +1,7 @@
-# Importing the relevant modules
-from matplotlib import pyplot as plt, animation as  anim
-from functools import partial
-import math
+from matplotlib import pyplot as plt
 from numpy import *
-# Data
 
+# Data
 planets = [
     # ['Planet', Semi-Major Axis, Semi-Minor Axis, Tilts, Orbital Frequencies]
     ['Mercury', 0.387, 0.37870, 7.00, 6],
@@ -41,10 +38,7 @@ def planet_xlimit(): # Defining Graph X-Axis Limit
     temp_list = []
     for i in range(0, 4):
         temp_list.append(planets[i][1])
-        planet = i
     return([max(temp_list), i])
-
-
 
 ## Defining Figure
 fig, ax = plt.subplots()

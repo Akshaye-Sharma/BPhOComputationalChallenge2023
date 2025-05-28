@@ -1,14 +1,8 @@
-# Importing the relevant modules
 from matplotlib import pyplot as plt, animation as  anim
-from functools import partial
-import math
 from numpy import *
+
 # Data
-
-#plt.style.use('rose-pine')
-
 planets = [
-    # ['Planet', Semi-Major Axis, Semi-Minor Axis, Orbital Periods]
     ['Mercury', 0.387, 0.37870, 0.241],
     ['Venus', 0.723, 0.72298, 0.615],
     ['Earth', 1.00, 0.99986, 1.000],
@@ -21,20 +15,11 @@ planets = [
 ]
 
 # Calculations
-
-# Functions
 def eccentricity_calc(s_major, s_minor): # Calculates the Eccentricity of the Ellipse
     s_minor = s_minor ** 2
     s_major = s_major ** 2
     ecc = (1 - s_minor/s_major) ** 0.5
     return(ecc)
-
-def polar_equation_ellipse_calc(planet, theta): # Self explanatory
-    from math import cos
-    semi_major = planets[planet][1]
-    ecc = eccentricity_of_ellipse[planet]
-    top_eq = semi_major * (1 - (ecc ** 2))
-    bottom_eq = 1 - (ecc * cos(theta))
 
 def planet_ylimit(): # Defining Graph Y-Axis Limit
     temp_list = []
@@ -46,9 +31,7 @@ def planet_xlimit(): # Defining Graph X-Axis Limit
     temp_list = []
     for i in range(0, 4):
         temp_list.append(planets[i][1])
-        planet = i
     return([max(temp_list), i])
-
 
 eccentricity_of_ellipse = [] # Calculating all Eccentricities
 for planet in range(len(planets)):
@@ -57,7 +40,6 @@ for planet in range(len(planets)):
 
 
 ## Defining Figure
-
 fig, ax = plt.subplots()
 
 # Constant/Fixed Sun 
@@ -78,22 +60,8 @@ ylimit = planet_ylimit()
 xlimit = planet_xlimit()
 
 # Plotting Graph Limits
-
 plt.ylim(-ylimit, ylimit)
 plt.xlim(- (xlimit[0] - eccentricity_of_ellipse[xlimit[1]]), xlimit[0] + eccentricity_of_ellipse[xlimit[1]])
-
-
-#plt.ylim(-planets[3][2], planets[3][2])
-#plt.xlim(-planets[3][1], planets[3][1])
-# Plotting Info & Misc
-
-plt.xlabel('x/AU')
-plt.ylabel('y/AU')
-plt.title('Solar System')
-plt.legend()
-plt.grid()
-## Animation
-
 
 # Planet Artist
 orbits = []
@@ -114,6 +82,10 @@ def update(frame):
 # Animation
 an1 = anim.FuncAnimation(fig, update, frames=1080, interval=30, blit=True)
 
-
-# Displaying Graph
+# Plotting Info & Misc
+plt.xlabel('x/AU')
+plt.ylabel('y/AU')
+plt.title('Solar System')
+plt.legend()
+plt.grid()
 plt.show()

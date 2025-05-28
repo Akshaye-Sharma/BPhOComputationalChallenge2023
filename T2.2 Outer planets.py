@@ -1,10 +1,7 @@
-# Importing the relevant modules
-from matplotlib import pyplot as plt, animation as  anim
-from functools import partial
-import math
+from matplotlib import pyplot as plt
 from numpy import *
-# Data
 
+# Data
 planets = [
     # ['Planet', Semi-Major Axis, Semi-Minor Axis, Tilts, Orbital Frequencies]
     ['Mercury', 0.387, 0.37870, 7.00, 6],
@@ -17,21 +14,13 @@ planets = [
     ['Neptune', 30.25, 30.10870, 1.77, 0.7],
     ['Pluto', 39.51, 39.482, 17.5, 0.9]
 ]
-# Calculations
 
-# Functions
+# Calculations
 def eccentricity_calc(s_major, s_minor): # Calculates the Eccentricity of the Ellipse
     s_minor = s_minor ** 2
     s_major = s_major ** 2
     ecc = (1 - s_minor/s_major) ** 0.5
     return(ecc)
-
-def polar_equation_ellipse_calc(planet, theta): # Self explanatory
-    from math import cos
-    semi_major = planets[planet][1]
-    ecc = eccentricity_of_ellipse[planet]
-    top_eq = semi_major * (1 - (ecc ** 2))
-    bottom_eq = 1 - (ecc * cos(theta))
 
 def planet_ylimit():
     temp_list = []
@@ -47,8 +36,6 @@ def planet_xlimit():
     max_index = temp_list.index(max_val) + 4  # Add 4 to get correct planet index in original list
     return [max_val, max_index]
 
-
-
 eccentricity_of_ellipse = [] # Calculating all Eccentricities
 for planet in range(len(planets)):
     ecc_temp = eccentricity_calc(planets[planet][1], planets[planet][2])
@@ -56,7 +43,6 @@ for planet in range(len(planets)):
 
 
 ## Defining Figure
-
 fig, ax = plt.subplots()
 
 # Constant/Fixed Sun 
@@ -77,7 +63,6 @@ ylimit = planet_ylimit()
 xlimit = planet_xlimit()
 
 # Plotting Graph Limits
-
 plt.ylim(-ylimit, ylimit)
 plt.xlim(- (xlimit[0] - eccentricity_of_ellipse[xlimit[1]]), xlimit[0] + eccentricity_of_ellipse[xlimit[1]])
 

@@ -1,14 +1,9 @@
 from matplotlib import pyplot as plt, animation as  anim
-import matplotlib
-from functools import partial
-import math
 from numpy import *
-from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
 plt.style.use('classic')
 
 # Data
-
 planets = [
     # ['Planet', Semi-Major Axis, Semi-Minor Axis, Tilts, Orbital Periods]
     ['Mercury', 0.387, 0.37870, 7.00, 0.2],
@@ -21,21 +16,13 @@ planets = [
     ['Neptune', 30.25, 30.10870, 1.77, 163.7],
     ['Pluto', 39.51, 39.482, 17.5, 248]
 ]
-# Calculations
 
-# Functions
+# Calculations
 def eccentricity_calc(s_major, s_minor): # Calculates the Eccentricity of the Ellipse
     s_minor = s_minor ** 2
     s_major = s_major ** 2
     ecc = (1 - s_minor/s_major) ** 0.5
     return(ecc)
-
-def polar_equation_ellipse_calc(planet, theta): # Self explanatory
-    from math import cos
-    semi_major = planets[planet][1]
-    ecc = eccentricity_of_ellipse[planet]
-    top_eq = semi_major * (1 - (ecc ** 2))
-    bottom_eq = 1 - (ecc * cos(theta))
 
 def planet_ylimit(): # Defining Graph Y-Axis Limit
     temp_list = []
@@ -47,19 +34,17 @@ def planet_xlimit(): # Defining Graph X-Axis Limit
     temp_list = []
     for i in range(0, 4):
         temp_list.append(planets[i][1])
-        planet = i
     return([max(temp_list), i])
+
 eccentricity_of_ellipse = [] # Calculating all Eccentricities
 for planet in range(len(planets)):
     ecc_temp = eccentricity_calc(planets[planet][1], planets[planet][2])
     eccentricity_of_ellipse.append(ecc_temp)
 
-
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 plt.plot(0, 0, 1, c='yellow', marker='o', markersize=15)
-
 
 dotting = []
 for planet in range(5, 9):

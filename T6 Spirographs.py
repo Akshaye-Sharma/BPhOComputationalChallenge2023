@@ -1,12 +1,12 @@
-# Importing the relevant modules
 from matplotlib import pyplot as plt
-import tkinter as tk
 import math
-from numpy import *
+from numpy import linspace, cos, sin
+
+
 
 # Data
 planets = [
-    # ['Planet', Semi-Major Axis, Semi-Minor Axis, Orbital Periods]
+    # ['Planet', Semi-Major Axis, Semi-Minor Axis, Orbital Period (years)']
     ['Mercury', 0.387, 0.37870, 0.241],
     ['Venus', 0.723, 0.72298, 0.615],
     ['Earth', 1.00, 0.99986, 1.000],
@@ -18,110 +18,79 @@ planets = [
     ['Pluto', 39.51, 39.482, 247.974]
 ]
 
-# Functions
+# Function to calculate eccentricity
+def eccentricity_calc(s_major, s_minor):
+    return math.sqrt(1 - (s_minor ** 2) / (s_major ** 2))
 
-def eccentricity_calc(s_major, s_minor): # Calculates the Eccentricity of the Ellipse
-    s_minor = s_minor ** 2
-    s_major = s_major ** 2
-    ecc = (1 - s_minor/s_major) ** 0.5
-    del s_major, s_minor
-    return(ecc)
+# Calculate eccentricities
+eccentricities = [eccentricity_calc(p[1], p[2]) for p in planets]
 
 
-eccentricity_of_ellipse = [] # Calculating all Eccentricities
+# NOTE:
+# This spirograph visualization generally works best when choosing two INNER planets
+# (e.g., Mercury, Venus, Earth, Mars) or two OUTER planets (e.g., Uranus, Neptune, Pluto).
 
-for planet in range(len(planets)):
-    ecc_temp = eccentricity_calc(planets[planet][1], planets[planet][2])
-    eccentricity_of_ellipse.append(ecc_temp)
-    del ecc_temp
-
-
-
-def planet_ylimit(chosen_planets): # Defining Graph Y-Axis Limit
-    temp_list = []
-    for i in range(len(chosen_planets)):
-        temp_list.append(planets[chosen_planets[i]][2])
-    return(max(temp_list))
-
-def planet_xlimit(chosen_planets): # Defining Graph X-Axis Limit
-    temp_list = []
-    for i in range(len(chosen_planets)):
-        temp_list.append(planets[chosen_planets[i]][1])
-        pl = i
-    return([max(temp_list), pl])
-
-## Plotting Both Axis
-
-# Constant/Fixed Sun 
-Sun=[0]
-plt.plot(Sun, c= "Yellow", marker="o")
-
+# Get user input for planets
 chosen_planets = []
-
-for i in range(2): # Loop for choosing planets
-    allow = False
-    while allow == False:
+for i in range(2):
+    while True:
         try:
-            chosen_p = int(input("Choose Planets: ")) -1
-            allow = True
-        except:
-            print("Please Try Again.")
-    chosen_planets.append(chosen_p)
-    del chosen_p
+            chosen_p = int(input(f"Choose planet #{i + 1} (1-9): ")) - 1
+            if 0 <= chosen_p < len(planets):
+                chosen_planets.append(chosen_p)
+                break
+            else:
+                print("Please enter a number between 1 and 9.")
+        except ValueError:
+            print("Invalid input. Please enter an integer.")
 
 planet1 = chosen_planets[0]
 planet2 = chosen_planets[1]
 
-# Ellipses of Chosen Planets
-for i in range(len(chosen_planets)): # Plotting orbits normally
-    cur_t = linspace(0, 360, 180)
-    x = planets[chosen_planets[i]][1] * cos(radians(cur_t)) + eccentricity_of_ellipse[chosen_planets[i]]
-    y = planets[chosen_planets[i]][2] * sin(radians(cur_t))
+# Plot Sun
+plt.plot([0], [0], c="yellow", marker="o", label="Sun")
 
-    plt.plot(x,y, label=planets[chosen_planets[i]][0])
-    del cur_t
+# Plot orbits as ellipses
+theta = linspace(0, 2 * math.pi, 360)
+for i in chosen_planets:
+    a = planets[i][1]
+    b = planets[i][2]
+    e = eccentricities[i]
+    x = a * cos(theta) + a * e  # Offset ellipse to place Sun at one focus
+    y = b * sin(theta)
+    plt.plot(x, y, label=planets[i][0])
 
+# Generate spirograph
+omega1 = 2 * math.pi / planets[planet1][3]
+omega2 = 2 * math.pi / planets[planet2][3]
+a1, b1, e1 = planets[planet1][1], planets[planet1][2], eccentricities[planet1]
+a2, b2, e2 = planets[planet2][1], planets[planet2][2], eccentricities[planet2]
 
-for theta in range(360): # Creating Spyrograph
-    
-    xvalue = []
-    yvalue = []
+t_values = linspace(0, 200 * math.pi, 500)  # Enough steps to show pattern
 
-    x = planets[planet1][1] * cos(theta / planets[planet1][3]) + eccentricity_of_ellipse[planet1]
-    y = planets[planet1][2] * sin(theta / planets[planet1][3])
+for t in t_values:
+    x1 = a1 * cos(omega1 * t) + a1 * e1
+    y1 = b1 * sin(omega1 * t)
+    x2 = a2 * cos(omega2 * t) + a2 * e2
+    y2 = b2 * sin(omega2 * t)
 
-    x2 = planets[planet2][1] * cos(theta / planets[planet2][3]) + eccentricity_of_ellipse[planet2]
-    y2 = planets[planet2][2] * sin(theta / planets[planet2][3])
-    if planet1 >= 6 or planet2 >= 6:
-        if theta % 3 == False:
-            theta -= 2
+    plt.plot([x1, x2], [y1, y2], color='black', linewidth=0.2)
 
-    xvalue.append(x)
-    xvalue.append(x2)
-    yvalue.append(y)
-    yvalue.append(y2)
-    plt.plot(xvalue, yvalue, color='black', linewidth=0.3)
+# Set graph limits
+max_x = max(planets[planet1][1] + a1 * e1, planets[planet2][1] + a2 * e2)
+max_y = max(planets[planet1][2], planets[planet2][2])
+plt.xlim(-max_x * 1.1, max_x * 1.1)
+plt.ylim(-max_y * 1.1, max_y * 1.1)
 
-
-# Defining Graph Limits
-ylimit = planet_ylimit(chosen_planets)
-xlimit = planet_xlimit(chosen_planets)
-
-plt.xlim(-xlimit[0], xlimit[0] + eccentricity_of_ellipse[chosen_planets[xlimit[1]]])
-plt.ylim(-ylimit, ylimit)
-
-
-# Plotting Info & Misc
-
-plt.xlabel('x/AU')
-plt.ylabel('y/AU')
-plt.title(f'Spyrograph of {planets[planet1][0]}, and {planets[planet2][0]}')
+# Plotting info
+plt.xlabel('x (AU)')
+plt.ylabel('y (AU)')
+plt.title(f'Spirograph of {planets[planet1][0]} and {planets[planet2][0]}')
 plt.legend()
 plt.grid()
 
-# Making Graph Circular 
-fig = plt.gcf()
-fig.gca().set_aspect('equal')
+# Circular plot
+plt.gca().set_aspect('equal')
 
-# Displaying Graph
+# Show plot
 plt.show()
