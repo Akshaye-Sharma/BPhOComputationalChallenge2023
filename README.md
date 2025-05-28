@@ -13,6 +13,10 @@ where I was awarded a **Silver** medal. The project visualizes and animates the 
 * Numerical integration plot showing orbital time vs. angle using Simpson’s method.
 * Spirograph plots combining orbits of two planets to generate beautiful, dynamic patterns.
 
+## Demo
+
+![3D Animation of Outer Planets](media/orbiting_planets3d.gif)
+
 ## Prerequisites
 
 * Python 3.x
